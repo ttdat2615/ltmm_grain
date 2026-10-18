@@ -57,3 +57,13 @@ def crypt_file():
     with open(dst, "wb") as f:
         f.write(cipher.encrypt(data))
     print(f"Đã ghi {len(data)} byte vào {dst}")
+# ============ Đo tốc độ ============
+
+def benchmark(n_bytes=20_000):
+    print(f"Sinh {n_bytes} byte keystream:")
+    for name, cls in grain.CIPHERS.items():
+        cipher = cls(os.urandom(cls.KEY_BYTES), os.urandom(cls.IV_BYTES))
+        start = time.perf_counter()
+        cipher.keystream(n_bytes)
+        seconds = time.perf_counter() - start
+        print(f"  Grain {name:<4}: {n_bytes / seconds / 1024:8.1f} KB/s")
